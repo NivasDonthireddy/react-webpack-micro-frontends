@@ -8,6 +8,7 @@ This mono repo contains...
 - `main-app` - App that hosts above two components. Also acts as a medium to communicate with each other.
 
 <hr>
+
 ### Local Setup
 
 1. Navigate to each project
@@ -30,6 +31,7 @@ Each application will run on its configured ports.
 - `main-app` - http://localhost:9000/
 
 <hr>
+
 ### Session Notes ( SE-COP )
 
 #### Configurations for Account Details App.

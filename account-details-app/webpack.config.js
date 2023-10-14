@@ -1,6 +1,5 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ModuleFederationPlugin } = require("webpack").container;
 
 module.exports = {
   entry: "/src/index.js",
@@ -24,13 +23,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new ModuleFederationPlugin({
-      name: "AccountDetailsApp",
-      filename: "accountDetailsApp_remote.js",
-      exposes: {
-        "./AccountDetails": "./src/components/AccountDetails",
-      },
-    }),
     new HtmlWebpackPlugin({
       template: "src/index.html",
     }),

@@ -37,7 +37,7 @@ Each application will run on its configured ports.
 #### Configurations for Account Details App.
 - Import the `ModuleFederationPlugin` from webpack
 ```javascript
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { ModuleFederationPlugin } = require("webpack").container;
 ```
 
 -  Within the webpack configuration for the *account-details-app*, include the following code in the plugins section to expose the components that need to be rendered in another application.

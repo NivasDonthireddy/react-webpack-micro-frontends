@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import AccountDetails from "./components/AccountDetails";
 
-/**
- * Main Component of the application.
- * Contains all the routing configurations
- *
- */
 export default function App() {
-  const [selectedAccount, setSelectedAccount] = useState();
+  const [selectedAccount, setSelectedAccount] = useState(1);
 
   return (
     <main className="m-8">

@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import AccountsSummary from "./components/AccountsSummary";
 
-/**
- * Main Component of the application.
- * Contains all the routing configurations
- *
- */
 export default function App() {
-  let [selectedAccount, setSelectedAccount] = useState(null);
+  let [selectedAccount, setSelectedAccount] = useState(1);
 
   const handleAccountSelected = (accountId) => {
     setSelectedAccount(accountId);

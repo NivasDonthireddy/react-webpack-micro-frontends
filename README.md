@@ -32,75 +32,81 @@ Each application will run on its configured ports.
 
 <hr>
 
-### Session Notes ( SE-COP )
+### Session Notes on Microfrontends using Webpack (React)
 
-#### Configurations for Account Details App.
-- Import the `ModuleFederationPlugin` from webpack
+1. Import `ModulefederationPlugin` and give the below configuration options in `webpack.config.js` file of `account-summary-app` to expose the `AccountSummary` component.
 ```javascript
 const { ModuleFederationPlugin } = require("webpack").container;
-```
 
--  Within the webpack configuration for the *account-details-app*, include the following code in the plugins section to expose the components that need to be rendered in another application.
-```javascript
-new ModuleFederationPlugin({
-    name: "AccountDetailsApp",
-    filename: "accountDetailsApp_remote.js",
-    exposes: {
-        "./AccountDetails": "./src/components/AccountDetails",
-    },
-})
-```
-
-#### Configurations for Account Summary App.
-- Import the `ModuleFederationPlugin` from webpack
-```javascript
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-```
-
--  Within the webpack configuration for the *account-summary-app*, include the following code in the plugins section to expose the components that need to be rendered in another application.
-```javascript
 new ModuleFederationPlugin({
     name: "AccountsSummaryApp",
-    filename: "accountsSummaryApp_remote.js",
+    filename: "remoteEntry.js",
     exposes: {
         "./AccountsSummary": "./src/components/AccountsSummary",
     },
 })
 ```
 
-#### Configurations for Main App.
-- Import the `ModuleFederationPlugin` from webpack
-```javascript
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-```
+2. Import `ModulefederationPlugin` and give the below configuration options in `webpack.config.js` file of `main-app` to specify the remotes & to be able to find the AccountsSummary that we just exposed in previous step.
 
--  In the webpack configuration for the main-app,include the following code in the plugins section to specify the URLs for all the remote applications.
 ```javascript
+const { ModuleFederationPlugin } = require("webpack").container;
+
 new ModuleFederationPlugin({	
   remotes: {	
-    AccountsSummaryApp_Remote:	
-      "AccountsSummaryApp@http://localhost:9001/accountsSummaryApp_remote.js",	
-    AccountDetailsApp_Remote:	
-      "AccountDetailsApp@http://localhost:9002/accountDetailsApp_remote.js",	
+    AccountsSummaryApp:	"AccountsSummaryApp@http://localhost:9001/remoteEntry.js",
   },	
 })
 ```
 
-- To consume these two micro-frontends in the *main-app*, utilize the names defined above and the names used when exposing the remotes.
+3. Import AccountSummary component in `AccountsPage.js` of `main-app` to be able to render this here.
+
 ```javascript
-const AccountsSummary = React.lazy(() =>	
-  import("AccountsSummaryApp_Remote/AccountsSummary")	
-);	
-const AccountDetails = React.lazy(() =>	
-  import("AccountDetailsApp_Remote/AccountDetails")	
+const AccountsSummary = React.lazy(() =>
+  import("AccountsSummaryApp/AccountsSummary")
 );
+
+<Suspense fallback={<h1>Error Loading Account Summary</h1>}>
+  <AccountsSummary onAccountSelected={handleAccountSelected} />
+</Suspense>
 ```
 
-- Now you should be able to consume the components served from a remote application within the *main-app*.
+#### Let's try to make the same changes on AccountDetails microfrontend.
+
+4. Import `ModulefederationPlugin` and give the below configuration options in `webpack.config.js` file of `account-details-app` to expose the `AccountDetails` component.
 ```javascript
-<AccountsSummary onAccountSelected={handleAccountSelected} />
-<AccountDetails selectedAccountId={selectedAccount} />
+const { ModuleFederationPlugin } = require("webpack").container;
+
+new ModuleFederationPlugin({
+    name: "AccountDetailsApp",
+    filename: "remoteEntry.js",
+    exposes: {
+        "./AccountDetails": "./src/components/AccountDetails",
+    },
+})
 ```
 
+5. Add another object to remotes List in `webpack.config.js` file of `main-app` to be able to find the AccountDetails that we just exposed in previous step.
 
+```javascript
+const { ModuleFederationPlugin } = require("webpack").container;
 
+new ModuleFederationPlugin({	
+  remotes: {	
+    AccountsSummaryApp:	"AccountsSummaryApp@http://localhost:9001/remoteEntry.js",
+    AccountDetailsApp:	"AccountDetailsApp@http://localhost:9002/remoteEntry.js",
+  },	
+})
+```
+
+6. Import AccountDetails component in `AccountsPage.js` of `main-app` to be able to render this here.
+
+```javascript
+const AccountDetails = React.lazy(() =>
+  import("AccountDetailsApp/AccountDetails")
+);
+
+<Suspense fallback={<h1>Error Loading Account Details</h1>}>
+  <AccountDetails selectedAccountId={selectedAccount} />
+</Suspense>
+```
